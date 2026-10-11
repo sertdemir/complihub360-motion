@@ -24,8 +24,11 @@ export const KineticLine: React.FC<{
   return (
     <span style={{display: 'inline-block', ...style}}>
       {words.map((raw, i) => {
-        const isAccent = raw.startsWith('*') && raw.endsWith('*');
-        const word = isAccent ? raw.slice(1, -1) : raw;
+        // `*wort*` ist Akzent, auch mit Satzzeichen dahinter (`*Sie*.`).
+        const m = raw.match(/^\*(.+)\*([.,:;!?…»«"“”’)]*)$/);
+        const isAccent = !!m;
+        const word = m ? m[1] : raw;
+        const tail = m ? m[2] : '';
         const t0 = inAt + i * p.stagger;
         const k = prog(t, t0, t0 + p.enter, EASE.enter);
         const out = outAt === undefined ? 0 : prog(t, outAt + i * 0.03, outAt + i * 0.03 + p.exit, EASE.exit);
@@ -33,6 +36,7 @@ export const KineticLine: React.FC<{
           <React.Fragment key={i}>
             <Mask k={k} out={out} tilt={profile === 'lift' ? 4 : 2}>
               <span style={isAccent ? {color: accent, fontStyle: 'italic'} : undefined}>{word}</span>
+              {tail}
             </Mask>
             {i < words.length - 1 ? ' ' : null}
           </React.Fragment>
