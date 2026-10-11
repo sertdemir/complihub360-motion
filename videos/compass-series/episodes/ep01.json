@@ -1,0 +1,13 @@
+{
+  "id": "ep01",
+  "title": "Was wirklich gilt",
+  "hook": {
+    "de": "Viele Regeln. Nicht alle gelten für *Sie*.",
+    "en": "Lots of rules. Not all of them apply to *you*."
+  },
+  "lines": [
+    {"de": "Wir fragen nur, was *zählt*.", "en": "We only ask what *matters*."},
+    {"de": "Sehen, was *wirklich* gilt.", "en": "See what *actually* applies."}
+  ],
+  "cta": {"de": "Link in der Bio", "en": "Link in bio"}
+}

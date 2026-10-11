@@ -33,7 +33,8 @@
     "styles:objects": "node sims/build.mjs objects && node sims/capture.mjs objects --size 1080x1920 --dpr 1 --fps 30 --crf 16 --out public/styles/objects.mp4",
     "styles:sfx": "for s in line objects; do STYLE=$s python3 -m sfx sfx/cues/style_probes.py; done",
     "styles:compass": "node sims/build.mjs compass && node sims/capture.mjs compass --size 1080x1920 --dpr 1 --fps 30 --crf 16 --out public/styles/compass.mp4",
-    "styles:combo": "python3 -m sfx sfx/cues/style_combo.py && remotion render StyleCombo out/styles/combo-silent.mp4 && ffmpeg -loglevel error -y -i out/styles/combo-silent.mp4 -i public/styles/combo.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -movflags +faststart -shortest out/styles/combo.mp4 && python3 scripts/glitch-check.py out/styles/combo.mp4"
+    "styles:combo": "python3 -m sfx sfx/cues/style_combo.py && remotion render StyleCombo out/styles/combo-silent.mp4 && ffmpeg -loglevel error -y -i out/styles/combo-silent.mp4 -i public/styles/combo.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -movflags +faststart -shortest out/styles/combo.mp4 && python3 scripts/glitch-check.py out/styles/combo.mp4",
+    "series": "node scripts/series.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",

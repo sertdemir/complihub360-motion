@@ -44,6 +44,18 @@ Volltext: `KN-BRAND-001` im Repo `sertdemir/complihub360-alpha` (`.knowledge/mem
 
 `calm`: lange Lesepausen, weiche Springs, Pad, kein Pop-Feuerwerk. `lift`: Schnitte auf den Beat, Pop-Springs, ein Hero-Moment. Beide: Erleichterung und Neugier statt Angst. Hook-Muster: *"Was wäre, wenn …"*, *"Compliance muss sich nicht schwer anfühlen."* — nie *"Droht Ihnen …?"*
 
+## Serie "Kompass" (Vorlage, 2026-10-11)
+
+Für schnelle Reels mit einer Aussage gibt es eine fertige Vorlage aus der Kombi-Probe *"Die Linie findet den Kompass"*: Hook über ruhendem Kreis → die Linie sucht und schließt den Kreis → 3D-Kompass kippt in den Raum, die Nadel kommt zur Ruhe, 1–3 Zeilen → zurück in die Draufsicht, Kreis wird Bildmarke → Endcard mit Claim und CTA.
+
+Eine Folge ist **nur Text**: `videos/compass-series/episodes/<id>.json` (Hook, 1–3 Zeilen, CTA, je DE + EN, ein `*Akzent*` pro Zeile). Timing, 3D-Kamera, Nadel und Klang leiten sich daraus ab (`timing.ts`).
+
+- `npm run series -- <id> --plan` → Timeline prüfen, nichts rendern
+- `npm run series -- <id> --draft` → halbe Auflösung, DE + EN, Kontaktbögen
+- `npm run series -- <id>` → final, mit Aussetzer-Check
+
+Der Ablauf oben gilt verkürzt: Stufe 3 ist ein **Copy-Canvas** (je Hook und Zeile drei Varianten, DNA-geprüft), Stufen 4–7 erledigt die Vorlage. Review-Loop und Abnahme bleiben Pflicht. Hook-Copy fällt unter den DNA-Filter: Orientierung statt Drohung.
+
 ## Maschinen-Routing
 
 | Bedarf | Maschine | Stand |

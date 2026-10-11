@@ -10,3 +10,4 @@ sims/dist/
 public/*.wav
 public/styles/*.mp4
 public/**/*.wav
+public/series/

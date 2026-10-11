@@ -2,14 +2,17 @@ import * as THREE from 'three';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 import {runSim} from '../kit/runtime.js';
 import {clamp01, easeInOutCubic, lerp} from '../kit/util.js';
-import TL from '../../videos/styles/combo.json';
+import COMBO from '../../videos/styles/combo.json';
 
 // "Die Linie findet den Kompass" (CompliHub360 · Kombi-Probe A+B, 3D-Teil).
 // Startet in exakter Draufsicht: der goldene Ring liegt pixelgenau dort, wo
 // Remotion den gezeichneten Kreis endet (Mitte RING_PX, Radius RING_R px auf
 // 1080×1920). Dann kippt die Kamera in die Perspektive, die Nadel sucht und
 // steht, und die Kamera kehrt in die Draufsicht zurück, wo Remotion wieder
-// übernimmt. Zeiten aus videos/styles/combo.json.
+// übernimmt. Zeiten aus videos/styles/combo.json — oder, für eine Folge der
+// Serie "Kompass", aus `timeline` in der Capture-Config (scripts/series.mjs).
+// Die Config wird schon beim Laden injiziert (addInitScript), daher hier lesbar.
+const TL = {...COMBO, ...(window.__SIM_CONFIG?.timeline ?? {})};
 
 const DEFAULTS = {
   duration: TL.duration,
