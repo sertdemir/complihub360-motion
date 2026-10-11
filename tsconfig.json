@@ -11,5 +11,5 @@
     "noEmit": true,
     "lib": ["DOM", "ES2022"]
   },
-  "include": ["src", "timeline.json"]
+  "include": ["src", "videos", "timeline.json"]
 }

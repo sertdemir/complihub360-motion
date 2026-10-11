@@ -1,8 +1,8 @@
 {
-  "name": "effort-video",
+  "name": "complihub360-motion",
   "version": "1.0.0",
   "private": true,
-  "description": "Motion design pipeline for coding agents: taste rules, timeline-synced sound, a visual self-review loop (Remotion), and web sims captured frame by frame to 60 fps video.",
+  "description": "Motion- und Video-Produktionssystem für CompliHub360: Reels, Marketing, Erklärvideos. Basiert auf claude-motion (MIT).",
   "scripts": {
     "studio": "remotion studio",
     "still": "remotion still EffortVideo",
@@ -17,10 +17,20 @@
     "gif": "ffmpeg -loglevel error -y -i out/effort.mp4 -vf \"fps=12,scale=420:-1:flags=lanczos,hqdn3d=4:4:6:6,split[a][b];[a]palettegen=max_colors=64:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle\" media/preview.gif",
     "typecheck": "tsc",
     "sims": "node sims/build.mjs",
-    "capture": "node sims/capture.mjs"
+    "capture": "node sims/capture.mjs",
+    "reel:draft": "remotion render ReelTemplate out/reel-draft.mp4 --scale=0.5 --crf=26",
+    "reel:sheet": "node scripts/sheet.mjs --video out/reel-draft.mp4 --timeline videos/reel-template/timeline.json --from 0 --to 15 --every 1 --cols 8 --rows 2 --size 270 --name reel",
+    "reel:safe": "remotion still ReelTemplate out/reel-safe.png --frame=200 --props='{\"showSafe\":true}'",
+    "reel:sfx": "python3 -m sfx sfx/cues/reel_template.py",
+    "reel:build": "npm run reel:sfx && remotion render ReelTemplate out/reel-template-silent.mp4 && ffmpeg -loglevel error -y -i out/reel-template-silent.mp4 -i public/reel-template.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -movflags +faststart -shortest out/reel-template.mp4 && node scripts/wave.mjs out/reel-template.mp4 --timeline videos/reel-template/timeline.json",
+    "tokens:sync": "node scripts/sync-tokens.mjs",
+    "tokens:check": "node scripts/sync-tokens.mjs --check",
+    "check": "tsc && node scripts/sync-tokens.mjs --check"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/ibm-plex-serif": "^5.2.7",
     "@fontsource/instrument-serif": "5.3.0",
     "@fontsource/jetbrains-mono": "5.3.0",
     "@remotion/cli": "4.0.529",

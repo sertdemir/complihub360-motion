@@ -1,0 +1,20 @@
+{
+  "id": "ReelTemplate",
+  "format": "reel",
+  "profile": "lift",
+  "fps": 30,
+  "duration": 15,
+  "s1": {
+    "hook": 0,
+    "hookOut": 3.15
+  },
+  "s2": {
+    "cards": [3.35, 5.15, 6.95],
+    "checks": [3.95, 5.75, 7.55],
+    "merge": 10.3
+  },
+  "end": {
+    "iris": 10.75,
+    "chime": 11.4
+  }
+}
