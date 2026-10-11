@@ -1,7 +1,7 @@
 """Klang für die drei Stilproben (videos/styles), Zen-Baukasten, gleiche Timeline.
 
     STYLE=line python3 -m sfx sfx/cues/style_probes.py      # → public/styles/line.wav
-    STYLE=objects ... / STYLE=landscape ...
+    STYLE=objects ...
 """
 
 import os
@@ -25,8 +25,5 @@ def score(mix, tl):
     elif STYLE == "objects":
         # die Nadel schwingt aus: Schalenton, wenn sie steht
         place(mix, hall, 3.3, bowl(220.0, dur=5, strike=0.6), 0.1)
-    else:
-        # die Landschaft beruhigt sich: Atem, der ausklingt
-        place(mix, hall, 0.3, breath(3.4, fc=420, peak=0.3), 0.09, send=1.0)
     place(mix, hall, tl["logo"], bowl(146.83, dur=6, strike=0.8), 0.14)
     finish(mix, hall)
