@@ -35,6 +35,10 @@ IBM Plex Serif (Display, 500), Inter (UI), IBM Plex Mono (Labels) — aus Compas
 
 `<EndCard start origin line? />` — Petrol-Iris aus einem Objekt im Bild (`origin`), Logo mit Claim. `line` nur für ruhige Information (URL, "Mehr im Profil") — nie Druck, nie Countdown. Mindest-Standzeit 2 s.
 
+## Endcard mit Claim-Zeile
+
+`<EndCardClaim start cta url? origin />` — große Marke ohne Claim-Zeile (`<Logo withClaim={false} />`), Goldlinie, „Always on your side.“ als eigene Zeile (`CLAIM_LINE`, in jeder Sprache englisch), darunter die CTA. Abgenommen in Reel 01, Runde 2.
+
 ## Formate & Safe Zones
 
 `FORMATS.reel` 1080×1920 (oben 250, unten 380, links 60, rechts 120 frei), `feed` 1080×1350, `square`, `wide` 1920×1080. Inhalte in `<SafeArea format>`; prüfen mit `npm run reel:safe` (rotes Overlay = verdeckt).

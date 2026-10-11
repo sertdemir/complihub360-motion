@@ -40,6 +40,8 @@ Volltext: `KN-BRAND-001` im Repo `sertdemir/complihub360-alpha` (`.knowledge/mem
 | Erklärvideo Web/YouTube | `wide` 1920×1080 | 1–5 min | `calm` |
 | Risk Map, Privacy, Pflichten | jedes | jedes | **immer `calm`** |
 
+**Klang (Festlegung 2026-10-11):** Die harten Upstream-Generatoren (`click`, `pop`, `whoosh`, `riser`, `impact`) taten in den Ohren weh. Standard ist `sfx/zen.py`: Drone, Atem, Klangschale, Holzschlägel, gemeinsamer Hall, D-Dur-Pentatonik, −16 LUFS.
+
 `calm`: lange Lesepausen, weiche Springs, Pad, kein Pop-Feuerwerk. `lift`: Schnitte auf den Beat, Pop-Springs, ein Hero-Moment. Beide: Erleichterung und Neugier statt Angst. Hook-Muster: *"Was wäre, wenn …"*, *"Compliance muss sich nicht schwer anfühlen."* — nie *"Droht Ihnen …?"*
 
 ## Maschinen-Routing
@@ -48,7 +50,7 @@ Volltext: `KN-BRAND-001` im Repo `sertdemir/complihub360-alpha` (`.knowledge/mem
 |---|---|---|
 | Typo, UI, CI-Grafik, Captions, Schnitt | Remotion (`src/`, `videos/`) | ✅ P0 |
 | Viele Agenten, Partikel, 3D-Objekt, Kamerafahrt | `sims/` (three.js, Frame-Capture) | ✅ upstream |
-| UI-Sounds, Pads, Akzente | `sfx/` | ✅ |
+| UI-Sounds, Pads, Akzente | `sfx/`; weich und meditativ: `sfx/zen.py` (Standard für CompliHub) | ✅ |
 | Sprecherstimme, Musik | ElevenLabs | P1 |
 | 2D-Figuren | Lottie / Rive in Remotion | P2 |
 | Generative Bilder / Clips, Figuren in Bewegung | fal.ai (Flux, Wan, Kling, Veo), Recraft | P3 |

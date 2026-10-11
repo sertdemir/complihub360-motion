@@ -3,7 +3,7 @@
   "format": "reel",
   "profile": "lift",
   "fps": 30,
-  "duration": 24,
+  "duration": 25,
   "s1": {
     "hook": 0,
     "goldNudge": 0.3,
@@ -47,7 +47,6 @@
   },
   "end": {
     "iris": 19.65,
-    "chime": 20.3,
-    "line": 21.3
+    "chime": 20.3
   }
 }

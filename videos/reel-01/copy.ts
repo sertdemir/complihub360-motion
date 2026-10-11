@@ -1,6 +1,7 @@
 // Reel 01 · abgenommene Copy (Storyboard 2026-10-11: Kern A, Szenen 1–6 A).
 // Wizard-Texte 1:1 aus dem Produkt (home.json → hero.preview), damit das Reel
-// keine Funktion zeigt, die es nicht gibt. Die Risk Map ist als Beispiel
+// keine Funktion zeigt, die es nicht gibt. Runde 2 (2026-10-11): CTA „Link in
+// der Bio“, Claim als eigene Zeile auf der Endcard. Die Risk Map ist als Beispiel
 // gekennzeichnet — Werte illustrativ, keine Kundendaten.
 
 export type Lang = 'de' | 'en';
@@ -45,7 +46,7 @@ export const COPY = {
       {match: 84, fits: ['Daten & Datenschutz'], gap: 'Niederländisch'},
     ],
     reveal: 'Name sichtbar nach der Buchung',
-    url: 'complihub360.com',
+    cta: 'Link in der Bio',
   },
   en: {
     hook: 'The compliance work you *shouldn’t* be doing alone.',
@@ -85,7 +86,7 @@ export const COPY = {
       {match: 84, fits: ['Data & Privacy'], gap: 'Dutch'},
     ],
     reveal: 'Name shown after booking',
-    url: 'complihub360.com',
+    cta: 'Link in bio',
   },
 } as const;
 

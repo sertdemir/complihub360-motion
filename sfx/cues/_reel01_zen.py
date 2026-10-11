@@ -1,4 +1,4 @@
-"""Gemeinsames Gerüst der Zen-Varianten für Reel 01 (siehe reel_01_zen_*.py)."""
+"""Gemeinsames Gerüst für weiche Cue-Sheets (Drone-Bett, Hall-Send), genutzt von reel_01.py."""
 
 from sfx.synth import envelope
 from sfx.zen import Hall, drone
