@@ -6,10 +6,14 @@ import {FPS, H, TL, W} from './lib';
 import {FORMATS} from './brand/brand';
 import {ReelTemplate, reelDuration, reelFps} from '../videos/reel-template/ReelTemplate';
 import {Reel01, reel01Duration, reel01Fps} from '../videos/reel-01/Reel01';
+import {STYLE_DURATION, STYLE_FPS, StyleLandscape, StyleLine, StyleObjects} from '../videos/styles/Styles';
 
 export const Root: React.FC = () => (
   <>
     {/* CompliHub360 */}
+    {([['StyleLine', StyleLine], ['StyleObjects', StyleObjects], ['StyleLandscape', StyleLandscape]] as const).map(([id, C]) => (
+      <Composition key={id} id={id} component={C} durationInFrames={Math.round(STYLE_DURATION * STYLE_FPS)} fps={STYLE_FPS} width={FORMATS.reel.w} height={FORMATS.reel.h} />
+    ))}
     {(['de', 'en'] as const).map((lang) => (
       <Composition
         key={lang}
