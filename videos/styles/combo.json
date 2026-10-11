@@ -1,0 +1,16 @@
+{
+  "fps": 30,
+  "duration": 11,
+  "line": 1.8,
+  "circleClosed": 3.3,
+  "to3d": 3.3,
+  "tiltStart": 3.8,
+  "tiltEnd": 5.3,
+  "needle": 5.0,
+  "backStart": 7.9,
+  "backEnd": 8.9,
+  "to2d": 8.9,
+  "logo": 9.1,
+  "ringR": 300,
+  "ringCy": 1180
+}
