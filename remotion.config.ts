@@ -6,6 +6,12 @@ Config.setJpegQuality(95);
 Config.setOverwriteOutput(true);
 Config.setCodec('h264');
 Config.setCrf(16);
+// Ein Render-Tab. Mit mehreren parallelen Tabs malt Chromium in der Cloud-
+// Umgebung (4 Kerne, keine GPU) bei voller Auflösung einzelne 256-px-Kacheln
+// nicht aus — gemessen 2026-10-11: concurrency 2 → 237 von 450 Frames mit
+// weißen/schwarzen Kacheln, concurrency 1 → 0. Kostet ~20 % Zeit.
+// Jeder Build prüft das Ergebnis mit scripts/glitch-check.py.
+Config.setConcurrency(1);
 Config.setPixelFormat('yuv420p');
 
 // Without a system browser Remotion downloads its own headless Chrome on first render.

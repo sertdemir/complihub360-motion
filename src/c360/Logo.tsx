@@ -68,7 +68,7 @@ const Mark: React.FC<{tone: LogoTone; k: (o: number) => number; t: number; gradI
   );
 };
 
-const Word: React.FC<{tone: LogoTone; k: number; claim: number}> = ({tone, k, claim}) => {
+const Word: React.FC<{tone: LogoTone; k: number; claim: number | null}> = ({tone, k, claim}) => {
   const c = TONE[tone];
   return (
     <>
@@ -80,11 +80,13 @@ const Word: React.FC<{tone: LogoTone; k: number; claim: number}> = ({tone, k, cl
           <path key={`g${i}`} d={d} fill={c.gold} />
         ))}
       </g>
+      {claim === null ? null : (
       <g opacity={claim} transform={`translate(0 ${WORD_H - 7})`}>
         <rect x={13.5 * (1 - claim)} y="3.5" width={13.5 * claim} height="0.7" fill={c.claim} />
         <path d={CLAIM} fill={c.claim} transform="translate(17.5 0)" />
         <rect x="87.5" y="3.5" width={13.5 * claim} height="0.7" fill={c.claim} />
       </g>
+      )}
     </>
   );
 };
@@ -99,8 +101,10 @@ export const Logo: React.FC<{
   tone?: LogoTone;
   height: number;
   start?: number;
+  /** Claim-Zeile in der Wortmarke. Aus, wenn der Claim als eigene Zeile gesetzt wird. */
+  withClaim?: boolean;
   style?: React.CSSProperties;
-}> = ({lockup = 'stacked', tone = 'on-light', height, start, style}) => {
+}> = ({lockup = 'stacked', tone = 'on-light', height, start, withClaim = true, style}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const t = frame / fps;
@@ -113,7 +117,8 @@ export const Logo: React.FC<{
 
   const stacked = lockup === 'stacked';
   const w = stacked ? WORD_W : MARK_W;
-  const h = stacked ? MARK_H + GAP_V + WORD_H : MARK_H;
+  const WORD_TEXT_H = 13.7; // Wortzeichen ohne Claim-Zeile (wie im Produkt-Logo)
+  const h = stacked ? MARK_H + GAP_V + (withClaim ? WORD_H : WORD_TEXT_H) : MARK_H;
   return (
     <svg viewBox={`0 0 ${w} ${h}`} style={{height, width: (height * w) / h, overflow: 'visible', ...style}}>
       <g transform={stacked ? `translate(${(WORD_W - MARK_W) / 2} 0)` : undefined}>
@@ -121,7 +126,7 @@ export const Logo: React.FC<{
       </g>
       {stacked && (
         <g transform={`translate(0 ${MARK_H + GAP_V})`}>
-          <Word tone={tone} k={word} claim={claim} />
+          <Word tone={tone} k={word} claim={withClaim ? claim : null} />
         </g>
       )}
     </svg>

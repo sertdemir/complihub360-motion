@@ -28,6 +28,8 @@ export const C = {
   goldBright: P.accent[500], // #d4af37
   goldOnPetrol: P.accent[300], // #f4c44a — Text-Gold auf Petrol (6,0:1)
   goldOnLight: P.accent[800], // #6a5b1e — Text-Gold auf Hell (6,7:1)
+  // Passung (Checks im Matching) — Compass success/700, sachlich, kein Signal-Grün
+  fit: P.success[700], // #047a52
   // Linien
   line: 'rgba(0,77,64,0.12)',
   lineOnPetrol: 'rgba(255,255,255,0.14)',
