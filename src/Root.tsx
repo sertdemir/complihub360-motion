@@ -9,11 +9,13 @@ import {Reel01, reel01Duration, reel01Fps} from '../videos/reel-01/Reel01';
 import {calculateCompassMetadata, CompassReel} from '../videos/compass-series/CompassReel';
 import type {Episode} from '../videos/compass-series/episode';
 import EP01 from '../videos/compass-series/episodes/ep01.json';
+import {ProductProbe, probeDuration, probeFps} from '../videos/product-probe/ProductProbe';
 import {COMBO_DURATION, STYLE_DURATION, STYLE_FPS, StyleCombo, StyleLine, StyleObjects} from '../videos/styles/Styles';
 
 export const Root: React.FC = () => (
   <>
     {/* CompliHub360 */}
+    <Composition id="ProductProbe" component={ProductProbe} durationInFrames={Math.round(probeDuration * probeFps)} fps={probeFps} width={FORMATS.reel.w} height={FORMATS.reel.h} />
     {/* Serie "Kompass": eine Folge = videos/compass-series/episodes/<id>.json, gebaut mit npm run series -- <id> */}
     <Composition
       id="CompassReel"
