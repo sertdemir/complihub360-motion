@@ -15,7 +15,8 @@ import {COMBO_DURATION, STYLE_DURATION, STYLE_FPS, StyleCombo, StyleLine, StyleO
 export const Root: React.FC = () => (
   <>
     {/* CompliHub360 */}
-    <Composition id="ProductProbe" component={ProductProbe} durationInFrames={Math.round(probeDuration * probeFps)} fps={probeFps} width={FORMATS.reel.w} height={FORMATS.reel.h} />
+    <Composition id="ProductProbe" component={ProductProbe} durationInFrames={Math.round(probeDuration * probeFps)} fps={probeFps} width={FORMATS.reel.w} height={FORMATS.reel.h} defaultProps={{format: 'reel' as const}} />
+    <Composition id="ProductProbeWide" component={ProductProbe} durationInFrames={Math.round(probeDuration * probeFps)} fps={probeFps} width={FORMATS.wide.w} height={FORMATS.wide.h} defaultProps={{format: 'wide' as const}} />
     {/* Serie "Kompass": eine Folge = videos/compass-series/episodes/<id>.json, gebaut mit npm run series -- <id> */}
     <Composition
       id="CompassReel"

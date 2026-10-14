@@ -17,12 +17,14 @@ TARGET_LUFS = -16.0
 def score(mix, tl):
     hall = Hall(tl["duration"])
     bed(mix, tl, [(0, [73.42, 110.0, 146.83, 220.0]), (tl["risk"], [73.42, 110.0, 146.83, 185.0, 220.0])], 0.05)
-    for t in (tl["button"], tl["wizard"], tl["spinner"], tl["risk"], tl["match"], tl["end"]):
+    for t in (tl["button"], tl["wizard"], tl["spinner"], tl["globe"], tl["risk"], tl["match"], tl["end"]):
         place(mix, hall, t - 0.1, breath(0.9, fc=440, peak=0.45), 0.05)                 # die Form verwandelt sich
     for i, t in enumerate([tl["click"], *tl["picks"], tl["next"]]):
         place(mix, hall, t, mallet((293.66, 329.63, 369.99, 440.0)[i], tau=0.9), 0.05, pan=(-0.15, 0.15, -0.1, 0.1)[i])
     place(mix, hall, tl["check"], bowl(220.0, dur=4, strike=0.6), 0.09)                 # Häkchen
     place(mix, hall, tl["dot"] + 0.3, mallet(587.33, tau=1.4), 0.05)                     # Gold-Punkt
+    for i, t in enumerate(tl["markets"]):                                               # Märkte auf dem Globus
+        place(mix, hall, t, mallet((440.0, 493.88, 587.33)[i], tau=1.2), 0.045, pan=(0.0, -0.2, 0.15)[i])
     for i, t in enumerate(tl["rows"]):
         place(mix, hall, t, mallet((293.66, 329.63, 369.99, 440.0)[i], tau=0.8), 0.035)
     for i, t in enumerate(tl["cards"]):

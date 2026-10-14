@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import {C, clamp01, EASE, F, lerp, PROFILE, prog, sp, SPRING, TYPE} from '../../src/brand/brand';
 import {CLAIM_LINE} from '../../src/c360/EndCardClaim';
+import {DotGlobe, GlobeMarket} from '../../src/c360/DotGlobe';
 import {Logo} from '../../src/c360/Logo';
 import {KineticLine} from '../../src/c360/Text';
 import {Grain, Roll} from '../../src/components/primitives';
@@ -15,28 +16,44 @@ import TL from './timeline.json';
 // Kein harter Schnitt. Ein Satz pro Takt, der Satzpunkt in Gold.
 // Copy und Daten 1:1 aus Reel 01 (abgenommen), Risk Map und Fachleute als
 // Beispiel gekennzeichnet, keine Namen.
+// Runde 2 (2026-10-14): Punktglobus aus der MakerMap-Referenz — der Gold-Punkt
+// wächst zum Globus, der dreht nach Europa, die Märkte DE → UK + NL leuchten
+// auf. Zwei Formate aus einer Quelle: 9:16 (reel) und 16:9 (wide).
 
 export const probeDuration = TL.duration;
 export const probeFps = TL.fps;
 const D = COPY.de;
 
+// ─── Formate ─────────────────────────────────────────────────────────────────
+// reel: Satz oben, Form darunter. wide: Satz links, Form rechts. Alle Formmaße
+// sind gleich; nur der Anker (Mitte der Form) und der Satzblock wandern.
+export type ProbeFormat = 'reel' | 'wide';
+const LAYOUT = {
+  reel: {cx: 540, cy: 1050, head: {top: 290, left: 60, width: 900, size: 96}, claim: 96, cta: 110, globe: 680},
+  wide: {cx: 1330, cy: 545, head: {top: 330, left: 120, width: 720, size: 88}, claim: 70, cta: 100, globe: 700},
+} as const;
+
 // ─── Die eine Form ───────────────────────────────────────────────────────────
-type Shape = {cy: number; w: number; h: number; r: number; bg: string; shadow: number};
+// dy: Versatz der Formmitte zum Anker des Formats.
+type Shape = {dy: number; w: number; h: number; r: number; bg: string; shadow: number};
+const PILL_DY = -40;
 const S: Record<string, Shape> = {
-  pill: {cy: 1010, w: 560, h: 128, r: 64, bg: C.petrolDeep, shadow: 1},
-  button: {cy: 1010, w: 600, h: 128, r: 64, bg: C.petrol, shadow: 1},
-  wizard: {cy: 1050, w: 900, h: 780, r: 44, bg: '#f8fafa', shadow: 1},
-  spinner: {cy: 1050, w: 200, h: 200, r: 100, bg: C.petrolDeep, shadow: 1},
-  dot: {cy: 1050, w: 72, h: 72, r: 36, bg: '#c5913b', shadow: 0},
-  risk: {cy: 1060, w: 900, h: 820, r: 44, bg: '#f8fafa', shadow: 1},
-  match: {cy: 1050, w: 900, h: 700, r: 44, bg: C.petrolDeep, shadow: 1},
+  pill: {dy: PILL_DY, w: 560, h: 128, r: 64, bg: C.petrolDeep, shadow: 1},
+  button: {dy: PILL_DY, w: 600, h: 128, r: 64, bg: C.petrol, shadow: 1},
+  wizard: {dy: 0, w: 900, h: 780, r: 44, bg: '#f8fafa', shadow: 1},
+  spinner: {dy: 0, w: 200, h: 200, r: 100, bg: C.petrolDeep, shadow: 1},
+  dot: {dy: 0, w: 72, h: 72, r: 36, bg: '#c5913b', shadow: 0},
+  risk: {dy: 10, w: 900, h: 820, r: 44, bg: '#f8fafa', shadow: 1},
+  match: {dy: 0, w: 900, h: 700, r: 44, bg: C.petrolDeep, shadow: 1},
 };
-const STEPS: [number, number, Shape][] = [
+const globeShape = (d: number): Shape => ({dy: -20, w: d, h: d, r: d / 2, bg: '#f8fafa', shadow: 0.7});
+const steps = (globe: number): [number, number, Shape][] => [
   [0, 0, S.pill],
   [TL.button, 0.5, S.button],
   [TL.wizard, 0.75, S.wizard],
   [TL.spinner, 0.6, S.spinner],
   [TL.dot, 0.45, S.dot],
+  [TL.globe, 0.8, globeShape(globe)],
   [TL.risk, 0.8, S.risk],
   [TL.match, 0.8, S.match],
   [TL.end, 0.8, S.pill],
@@ -46,13 +63,14 @@ const mix = (a: string, b: string, k: number) => {
   const [x, y] = [hex(a), hex(b)];
   return `rgb(${x.map((v, i) => Math.round(lerp(v, y[i], k))).join(',')})`;
 };
-const shapeAt = (t: number): Shape => {
-  let cur = STEPS[0][2];
-  for (const [t0, dur, to] of STEPS.slice(1)) {
+const shapeAt = (t: number, globe: number): Shape => {
+  const all = steps(globe);
+  let cur = all[0][2];
+  for (const [t0, dur, to] of all.slice(1)) {
     if (t < t0) break;
     const k = prog(t, t0, t0 + dur, EASE.move);
     cur = {
-      cy: lerp(cur.cy, to.cy, k),
+      dy: lerp(cur.dy, to.dy, k),
       w: lerp(cur.w, to.w, k),
       h: lerp(cur.h, to.h, k),
       r: lerp(cur.r, to.r, k),
@@ -69,7 +87,8 @@ const win = (t: number, a: number, b: number, fin = 0.35, fout = 0.25) =>
   prog(t, a, a + fin, EASE.enter) * (1 - prog(t, b - fout, b, EASE.exit));
 
 // ─── Headline: Satz aus der Maske, der Punkt setzt sich in Gold ──────────────
-const Headline: React.FC<{text: string; inAt: number; outAt: number}> = ({text, inAt, outAt}) => {
+type Head = {top: number; left: number; width: number; size: number};
+const Headline: React.FC<{text: string; inAt: number; outAt?: number; head: Head}> = ({text, inAt, outAt = 99, head}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const t = frame / fps;
@@ -78,13 +97,13 @@ const Headline: React.FC<{text: string; inAt: number; outAt: number}> = ({text, 
   const dotAt = inAt + words * PROFILE.calm.stagger + 0.35;
   const dot = clamp01(sp(frame, fps, dotAt, SPRING.pop)) * (1 - prog(t, outAt + 0.1, outAt + 0.4, EASE.exit));
   return (
-    <div style={{position: 'absolute', top: 290, left: 60, width: 900}}>
+    <div style={{position: 'absolute', top: head.top, left: head.left, width: head.width}}>
       <KineticLine
         text={body}
         inAt={inAt}
-        outAt={outAt}
+        outAt={outAt === 99 ? undefined : outAt}
         profile="calm"
-        style={{...TYPE.display, color: C.petrol}}
+        style={{...TYPE.display, fontSize: head.size, color: C.petrol}}
         suffix={<span style={{display: 'inline-block', color: C.gold, transform: `scale(${dot})`, transformOrigin: '50% 85%', opacity: dot}}>.</span>}
       />
     </div>
@@ -213,26 +232,27 @@ const MatchContent: React.FC<{t: number; frame: number; fps: number}> = ({t, fra
 );
 
 // ─── Cursor ──────────────────────────────────────────────────────────────────
+// Wegpunkte relativ zum Anker der Form (Mitte des Wizards).
 const CURSOR: [number, number, number][] = [
-  [1.6, 1180, 1700],
-  [2.65, 600, 1040],
-  [4.25, 760, 1003],
-  [5.05, 330, 1139],
-  [6.1, 845, 1350],
-  [6.9, 1200, 1500],
+  [1.6, 640, 650],
+  [2.65, 60, -10],
+  [4.25, 220, -47],
+  [5.05, -210, 89],
+  [6.1, 305, 300],
+  [6.9, 660, 450],
 ];
-const cursorAt = (t: number) => {
-  let [x, y] = [CURSOR[0][1], CURSOR[0][2]];
+const cursorAt = (t: number, ax: number, ay: number) => {
+  let [x, y] = [ax + CURSOR[0][1], ay + CURSOR[0][2]];
   for (let i = 1; i < CURSOR.length; i++) {
     const [t1, x1, y1] = CURSOR[i];
     const k = prog(t, CURSOR[i - 1][0], t1, EASE.move);
-    x = lerp(x, x1, k);
-    y = lerp(y, y1, k);
+    x = lerp(x, ax + x1, k);
+    y = lerp(y, ay + y1, k);
   }
   return {x, y};
 };
-const Cursor: React.FC<{t: number}> = ({t}) => {
-  const {x, y} = cursorAt(t);
+const Cursor: React.FC<{t: number; ax: number; ay: number}> = ({t, ax, ay}) => {
+  const {x, y} = cursorAt(t, ax, ay);
   const clicks = [TL.click, ...TL.picks, TL.next];
   const press = Math.max(...clicks.map((c) => prog(t, c - 0.08, c, EASE.enter) * (1 - prog(t, c, c + 0.2, EASE.move))));
   const vis = prog(t, 1.6, 2.0, EASE.enter) * (1 - prog(t, 6.6, 7.0, EASE.exit));
@@ -243,27 +263,47 @@ const Cursor: React.FC<{t: number}> = ({t}) => {
   );
 };
 
+// ─── Globus ──────────────────────────────────────────────────────────────────
+// Märkte aus der Risk Map (DE → UK + NL), Hauptstädte als Näherung.
+const MARKETS: GlobeMarket[] = [
+  {code: 'DE', lon: 13.4, lat: 52.5, at: TL.markets[0]},
+  {code: 'UK', lon: -0.1, lat: 51.5, at: TL.markets[1]},
+  {code: 'NL', lon: 4.9, lat: 52.4, at: TL.markets[2]},
+];
+const GlobeContent: React.FC<{t: number; size: number}> = ({t, size}) => {
+  // Start in der Ruhelage der Bildmarke (30° West, Atlantik), dann nach Europa.
+  const k = prog(t, TL.turn[0], TL.turn[1], EASE.move);
+  // Danach näher heran: DE, UK und NL liegen sonst als ein Klumpen beieinander.
+  const z = prog(t, TL.turn[1] - 1.2, TL.turn[1] + 0.6, EASE.move);
+  const drift = Math.max(0, t - TL.turn[1]) * 0.6;
+  return <DotGlobe size={size} t={t} lon0={lerp(-30, 6, k) + drift} lat0={lerp(12, 50, k)} zoom={lerp(1, 2.6, z)} markets={MARKETS} />;
+};
+
 // ─── Komposition ─────────────────────────────────────────────────────────────
-export const ProductProbe: React.FC = () => {
+export const ProductProbe: React.FC<{format: ProbeFormat}> = ({format}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const t = frame / fps;
-  const s = shapeAt(t);
-  const left = 540 - s.w / 2;
-  const top = s.cy - s.h / 2;
-  const pulse = TL.dot <= t && t < TL.risk ? (t - TL.dot) % 0.9 / 0.9 : 0;
-  const dotLabel = win(t, TL.dot + 0.25, TL.risk + 0.1);
+  const L = LAYOUT[format];
+  const s = shapeAt(t, L.globe);
+  const left = L.cx - s.w / 2;
+  const cy = L.cy + s.dy;
+  const top = cy - s.h / 2;
+  const pulse = TL.dot <= t && t < TL.globe ? ((t - TL.dot) % 0.9) / 0.9 : 0;
+  const dotLabel = win(t, TL.dot + 0.25, TL.globe + 0.1);
+  const marketsK = win(t, TL.markets[2] + 0.3, TL.risk + 0.1);
   const claimK = prog(t, TL.cta, TL.cta + 0.6, EASE.enter);
+  const inner = (w: number, h: number): React.CSSProperties => ({position: 'absolute', width: w, height: h, left: (s.w - w) / 2, top: (s.h - h) / 2});
   return (
-    <AbsoluteFill style={{background: `radial-gradient(ellipse 70% 45% at 50% 52%, #ffffff 0%, ${C.stage} 60%, #e6ecea 100%)`}}>
-      <Headline text="Viele Regeln. Nicht alle gelten für Sie." inAt={TL.h1.in} outAt={TL.h1.out} />
-      <Headline text="Wir fragen nur, was zählt." inAt={TL.h2.in} outAt={TL.h2.out} />
-      <Headline text="Sehen, was wirklich gilt." inAt={TL.h3.in} outAt={TL.h3.out} />
-      <Headline text="Und die Fachleute, die passen." inAt={TL.h4.in} outAt={TL.h4.out} />
+    <AbsoluteFill style={{background: `radial-gradient(ellipse 70% 55% at ${(L.cx / (format === 'reel' ? 1080 : 1920)) * 100}% ${(L.cy / (format === 'reel' ? 1920 : 1080)) * 100}%, #ffffff 0%, ${C.stage} 60%, #e6ecea 100%)`}}>
+      <Headline head={L.head} text="Viele Regeln. Nicht alle gelten für Sie." inAt={TL.h1.in} outAt={TL.h1.out} />
+      <Headline head={L.head} text="Wir fragen nur, was zählt." inAt={TL.h2.in} outAt={TL.h2.out} />
+      <Headline head={L.head} text="Sehen, was wirklich gilt." inAt={TL.h3.in} outAt={TL.h3.out} />
+      <Headline head={L.head} text="Und die Fachleute, die passen." inAt={TL.h4.in} outAt={TL.h4.out} />
 
       {/* Puls um den Gold-Punkt */}
       {pulse > 0 ? (
-        <div style={{position: 'absolute', left: 540 - 36 - pulse * 60, top: S.dot.cy - 36 - pulse * 60, width: 72 + pulse * 120, height: 72 + pulse * 120, borderRadius: '50%', border: `2px solid ${C.gold}`, opacity: (1 - pulse) * 0.6}} />
+        <div style={{position: 'absolute', left: L.cx - 36 - pulse * 60, top: L.cy - 36 - pulse * 60, width: 72 + pulse * 120, height: 72 + pulse * 120, borderRadius: '50%', border: `2px solid ${C.gold}`, opacity: (1 - pulse) * 0.6}} />
       ) : null}
 
       <div
@@ -275,25 +315,36 @@ export const ProductProbe: React.FC = () => {
       >
         <div style={{gridArea: '1 / 1', opacity: win(t, -1, TL.button + 0.2) + win(t, TL.end + 0.5, 99)}}><PillContent /></div>
         <div style={{gridArea: '1 / 1', opacity: win(t, TL.button + 0.25, TL.wizard + 0.15), fontFamily: F.sans, fontWeight: 600, fontSize: 46, color: C.onPetrol}}>Bedarf prüfen</div>
-        <div style={{position: 'absolute', inset: 0, opacity: win(t, TL.wizard + 0.5, TL.spinner + 0.15)}}><WizardContent t={t} /></div>
+        <div style={{...inner(S.wizard.w, S.wizard.h), opacity: win(t, TL.wizard + 0.5, TL.spinner + 0.15)}}><WizardContent t={t} /></div>
         <div style={{gridArea: '1 / 1', opacity: win(t, TL.spinner + 0.35, TL.dot + 0.15, 0.2)}}><SpinnerContent t={t} /></div>
-        <div style={{position: 'absolute', inset: 0, width: S.risk.w, height: S.risk.h, left: (s.w - S.risk.w) / 2, top: (s.h - S.risk.h) / 2, opacity: win(t, TL.risk + 0.55, TL.match + 0.2)}}><RiskContent frame={frame} fps={fps} /></div>
-        <div style={{position: 'absolute', width: S.match.w, height: S.match.h, left: (s.w - S.match.w) / 2, top: (s.h - S.match.h) / 2, opacity: win(t, TL.match + 0.55, TL.end + 0.2)}}><MatchContent t={t} frame={frame} fps={fps} /></div>
+        <div style={{...inner(L.globe, L.globe), opacity: win(t, TL.globe + 0.2, TL.risk + 0.25, 0.6)}}>
+          <div style={{position: 'absolute', inset: 0, borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #ffffff 0%, #f3f6f5 45%, #dfe7e4 100%)'}} />
+          <div style={{position: 'absolute', inset: 0}}><GlobeContent t={t} size={L.globe} /></div>
+        </div>
+        <div style={{...inner(S.risk.w, S.risk.h), opacity: win(t, TL.risk + 0.55, TL.match + 0.2)}}><RiskContent frame={frame} fps={fps} /></div>
+        <div style={{...inner(S.match.w, S.match.h), opacity: win(t, TL.match + 0.55, TL.end + 0.2)}}><MatchContent t={t} frame={frame} fps={fps} /></div>
       </div>
 
-      <div style={{position: 'absolute', top: S.dot.cy + 80, left: 0, right: 0, textAlign: 'center', opacity: dotLabel, fontFamily: F.sans, fontWeight: 500, fontSize: 40, color: C.inkSoft}}>
+      <div style={{position: 'absolute', top: L.cy + 80, left: L.cx - 400, width: 800, textAlign: 'center', opacity: dotLabel, fontFamily: F.sans, fontWeight: 500, fontSize: 40, color: C.inkSoft}}>
         Ihre Risk Map ist fertig.
       </div>
-
-      {/* Ende: Claim über der Pill, CTA darunter */}
-      <div style={{position: 'absolute', top: 300, left: 60, width: 960, textAlign: 'center'}}>
-        <KineticLine text={CLAIM_LINE} inAt={TL.claim} profile="calm" style={{...TYPE.display, color: C.petrol}} />
+      {/* Markt-Pill unter dem Globus, wie der Zähler bei MakerMap */}
+      <div style={{position: 'absolute', top: L.cy - 20 + L.globe / 2 - 34, left: L.cx - 300, width: 600, display: 'flex', justifyContent: 'center', opacity: marketsK, transform: `translateY(${(1 - marketsK) * 12}px)`}}>
+        <span style={{display: 'flex', alignItems: 'center', gap: 14, background: C.petrolDeep, color: C.onPetrol, borderRadius: 999, padding: '18px 30px', fontFamily: F.sans, fontWeight: 600, fontSize: 30, boxShadow: '0 16px 30px -16px rgba(0,35,29,0.6)'}}>
+          <span style={{width: 14, height: 14, borderRadius: 7, background: C.gold}} />
+          3 Märkte · DE → UK + NL
+        </span>
       </div>
-      <div style={{position: 'absolute', top: S.pill.cy + 110, left: 0, right: 0, textAlign: 'center', opacity: claimK, transform: `translateY(${(1 - claimK) * 14}px)`, ...TYPE.label, fontSize: 30, color: C.inkMuted}}>
+
+      {/* Ende: Claim im Satzblock, CTA unter der Pill */}
+      <div style={{position: 'absolute', top: L.head.top, left: L.head.left, width: L.head.width, textAlign: format === 'reel' ? 'center' : 'left'}}>
+        <KineticLine text={CLAIM_LINE} inAt={TL.claim} profile="calm" style={{...TYPE.display, fontSize: L.claim, color: C.petrol, whiteSpace: 'nowrap'}} />
+      </div>
+      <div style={{position: 'absolute', top: L.cy + PILL_DY + L.cta, left: L.cx - 300, width: 600, textAlign: 'center', opacity: claimK, transform: `translateY(${(1 - claimK) * 14}px)`, ...TYPE.label, fontSize: 30, color: C.inkMuted}}>
         Link in der Bio
       </div>
 
-      <Cursor t={t} />
+      <Cursor t={t} ax={L.cx} ay={L.cy} />
       <Grain frame={frame} opacity={0.02} />
     </AbsoluteFill>
   );

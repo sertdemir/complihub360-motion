@@ -13,7 +13,14 @@ import subprocess
 import sys
 
 TILE = 32  # 256 px bei 1/8 Auflösung
-W, H = 135, 240  # 1080×1920 / 8
+W, H = 135, 240  # 1080×1920 / 8 — wird je Video aus ffprobe gesetzt
+
+
+def size(path):
+    out = subprocess.check_output(
+        ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", path]
+    ).decode().strip().split(",")
+    return int(out[0]) // 8, int(out[1]) // 8
 
 
 def frames(path):
@@ -51,7 +58,9 @@ def bad_tiles(buf):
 
 
 def main():
+    global W, H
     path = sys.argv[1]
+    W, H = size(path)
     bad = [i for i, f in enumerate(frames(path)) if bad_tiles(f)]
     if bad:
         print(f"{path}: {len(bad)} Frames mit Aussetzern: {bad}")
