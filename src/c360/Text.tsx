@@ -15,7 +15,9 @@ export const KineticLine: React.FC<{
   profile: ProfileId;
   style: React.CSSProperties;
   accent?: string;
-}> = ({text, inAt, outAt, profile, style, accent = C.goldOnLight}) => {
+  /** Hängt untrennbar am letzten Wort, z. B. ein Satzpunkt mit eigener Animation. */
+  suffix?: React.ReactNode;
+}> = ({text, inAt, outAt, profile, style, accent = C.goldOnLight, suffix}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const t = frame / fps;
@@ -32,13 +34,17 @@ export const KineticLine: React.FC<{
         const t0 = inAt + i * p.stagger;
         const k = prog(t, t0, t0 + p.enter, EASE.enter);
         const out = outAt === undefined ? 0 : prog(t, outAt + i * 0.03, outAt + i * 0.03 + p.exit, EASE.exit);
+        const mask = (
+          <Mask k={k} out={out} tilt={profile === 'lift' ? 4 : 2}>
+            <span style={isAccent ? {color: accent, fontStyle: 'italic'} : undefined}>{word}</span>
+            {tail}
+          </Mask>
+        );
+        const last = i === words.length - 1;
         return (
           <React.Fragment key={i}>
-            <Mask k={k} out={out} tilt={profile === 'lift' ? 4 : 2}>
-              <span style={isAccent ? {color: accent, fontStyle: 'italic'} : undefined}>{word}</span>
-              {tail}
-            </Mask>
-            {i < words.length - 1 ? ' ' : null}
+            {last && suffix ? <span style={{whiteSpace: 'nowrap'}}>{mask}{suffix}</span> : mask}
+            {last ? null : ' '}
           </React.Fragment>
         );
       })}

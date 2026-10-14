@@ -30,6 +30,9 @@ export const C = {
   goldOnLight: P.accent[800], // #6a5b1e — Text-Gold auf Hell (6,7:1)
   // Passung (Checks im Matching) — Compass success/700, sachlich, kein Signal-Grün
   fit: P.success[700], // #047a52
+  // Bühne der 3D-Szenen (sims/compass, sims/objects): gemessene Bodenfarbe in
+  // Draufsicht — 2D-Ebenen, die nahtlos an einen 3D-Clip anschließen, nutzen sie.
+  stage: '#eff0ef',
   // Linien
   line: 'rgba(0,77,64,0.12)',
   lineOnPetrol: 'rgba(255,255,255,0.14)',
