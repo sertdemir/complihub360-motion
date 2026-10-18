@@ -6,6 +6,7 @@ import {FPS, H, TL, W} from './lib';
 import {FORMATS} from './brand/brand';
 import {ReelTemplate, reelDuration, reelFps} from '../videos/reel-template/ReelTemplate';
 import {Reel01, reel01Duration, reel01Fps} from '../videos/reel-01/Reel01';
+import {TapProof, tapProofDuration, tapProofFps} from '../videos/tap-proof/TapProof';
 
 export const Root: React.FC = () => (
   <>
@@ -22,6 +23,15 @@ export const Root: React.FC = () => (
         defaultProps={{lang, showSafe: false}}
       />
     ))}
+    <Composition
+      id="TapProof"
+      component={TapProof}
+      durationInFrames={Math.round(tapProofDuration * tapProofFps)}
+      fps={tapProofFps}
+      width={FORMATS.reel.w}
+      height={FORMATS.reel.h}
+      defaultProps={{showSafe: false}}
+    />
     <Composition
       id="ReelTemplate"
       component={ReelTemplate}

@@ -33,6 +33,13 @@ export const C = {
   // Linien
   line: 'rgba(0,77,64,0.12)',
   lineOnPetrol: 'rgba(255,255,255,0.14)',
+  // Bühne (Video-Lab-Konzept V1, Motion-DNA): dunkles Petrol-Grau mit einem
+  // warmen Lichtkegel. Kein Compass-Token — die Bühne gibt es nur im Video.
+  stage: '#1B2222',
+  stageDeep: '#121616',
+  coneRgb: '255,244,226', // Lichtkegel und Staub, als RGB für Alpha-Verläufe
+  glass: 'rgba(255,255,255,0.92)', // Karten auf der Bühne
+  glassLine: 'rgba(255,255,255,0.5)',
 } as const;
 
 /**
