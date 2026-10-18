@@ -29,7 +29,12 @@
     "glitch": "python3 scripts/glitch-check.py",
     "reel01:sfx": "python3 -m sfx sfx/cues/reel_01.py",
     "reel01:draft": "remotion render Reel01-DE out/reel01-de-draft.mp4 --scale=0.5 --crf=26 && remotion render Reel01-EN out/reel01-en-draft.mp4 --scale=0.5 --crf=26",
-    "reel01:build": "npm run reel01:sfx && remotion render Reel01-DE out/reel01-de-silent.mp4 && ffmpeg -loglevel error -y -i out/reel01-de-silent.mp4 -i public/reel-01.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -movflags +faststart -shortest out/reel01-de.mp4 && python3 scripts/glitch-check.py out/reel01-de.mp4 && node scripts/wave.mjs out/reel01-de.mp4 --timeline videos/reel-01/timeline.json && remotion render Reel01-EN out/reel01-en-silent.mp4 && ffmpeg -loglevel error -y -i out/reel01-en-silent.mp4 -i public/reel-01.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -movflags +faststart -shortest out/reel01-en.mp4 && python3 scripts/glitch-check.py out/reel01-en.mp4 && node scripts/wave.mjs out/reel01-en.mp4 --timeline videos/reel-01/timeline.json"
+    "reel01:build": "npm run reel01:sfx && remotion render Reel01-DE out/reel01-de-silent.mp4 && ffmpeg -loglevel error -y -i out/reel01-de-silent.mp4 -i public/reel-01.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -movflags +faststart -shortest out/reel01-de.mp4 && python3 scripts/glitch-check.py out/reel01-de.mp4 && node scripts/wave.mjs out/reel01-de.mp4 --timeline videos/reel-01/timeline.json && remotion render Reel01-EN out/reel01-en-silent.mp4 && ffmpeg -loglevel error -y -i out/reel01-en-silent.mp4 -i public/reel-01.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -movflags +faststart -shortest out/reel01-en.mp4 && python3 scripts/glitch-check.py out/reel01-en.mp4 && node scripts/wave.mjs out/reel01-en.mp4 --timeline videos/reel-01/timeline.json",
+    "tapproof:draft": "remotion render TapProof out/tapproof-draft.mp4 --scale=0.5 --crf=26",
+    "tapproof:sheet": "node scripts/sheet.mjs --video out/tapproof-draft.mp4 --timeline videos/tap-proof/timeline.json --from 0 --to 24 --every 1 --cols 6 --rows 4 --size 270 --name tapproof",
+    "tapproof:safe": "remotion still TapProof out/tapproof-safe.png --frame=380 --props='{\"showSafe\":true}'",
+    "tapproof:sfx": "python3 -m sfx sfx/cues/tap_proof.py",
+    "tapproof:build": "npm run tapproof:sfx && remotion render TapProof out/tapproof-silent.mp4 && ffmpeg -loglevel error -y -i out/tapproof-silent.mp4 -i public/tap-proof.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -movflags +faststart -shortest out/tapproof.mp4 && python3 scripts/glitch-check.py out/tapproof.mp4 && node scripts/wave.mjs out/tapproof.mp4 --timeline videos/tap-proof/timeline.json"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",

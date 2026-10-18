@@ -1,0 +1,43 @@
+{
+  "id": "TapProof",
+  "format": "reel",
+  "profile": "calm",
+  "fps": 30,
+  "duration": 24.5,
+  "s1": {
+    "hook": 0,
+    "out": 2.5
+  },
+  "s2": {
+    "touch": 3.0,
+    "ring": 3.3,
+    "card": 3.4,
+    "line": 3.6,
+    "out": 6.6
+  },
+  "s3": {
+    "touch": 6.8,
+    "ring": 7.1,
+    "card": 7.2,
+    "line": 7.3,
+    "rows": [7.8, 8.05, 8.3],
+    "out": 11.2
+  },
+  "s4": {
+    "touch": 11.4,
+    "ring": 11.7,
+    "card": 11.8,
+    "line": 12.0,
+    "type": 12.3,
+    "out": 16.4
+  },
+  "s5": {
+    "dissolve": 16.4,
+    "line": 17.3,
+    "out": 19.4
+  },
+  "end": {
+    "iris": 19.6,
+    "chime": 20.2
+  }
+}
